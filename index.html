@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GAGAU GAMES</title>
+    <link rel="shortcut icon" href="imagens/download.jpg" type="image/x-icon" />
+    <link rel="stylesheet" href="style/style.css" />
+    <link href="style/style.css" rel="stylesheet" />
+  </head>
+  <body>
+    <header>
+      <div class="container header-flex">
+        <h1 class="logo">🎮 GAGAU GAMES</h1>
+        <nav>
+          <ul class="nav-list">
+            <li><a href="#">Início</a></li>
+            <li><a href="#reviews">Reviews</a></li>
+            <li><a href="#sobre">Sobre</a></li>
+            <li><a href="#contato">Contato</a></li>
+            <li>
+              <a href="Login.html" class="btn-login">Login</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="container hero-content">
+        <h2>Os melhores reviews dos maiores games!</h2>
+        <p>Análises honestas, atualizadas e com notas da comunidade gamer.</p>
+      </div>
+    </section>
+
+    <main class="container" id="reviews">
+      <h2 class="section-title">Últimos Reviews</h2>
+      <div style="margin-bottom: 16px">
+        <label for="genre-select">Filtrar por Gênero:</label>
+        <select id="genre-select">
+          <option value="">Todos</option>
+          <option value="action">Ação</option>
+          <option value="indie">Indie</option>
+          <option value="adventure">Aventura</option>
+          <option value="rpg">RPG</option>
+          <option value="strategy">Estratégia</option>
+          <option value="shooter">Tiro</option>
+          <option value="casual">Casual</option>
+          <option value="simulation">Simulação</option>
+          <option value="puzzle">Quebra-cabeça</option>
+          <option value="arcade">Arcade</option>
+          <option value="platformer">Plataforma</option>
+          <option value="racing">Corrida</option>
+          <option value="sports">Esportes</option>
+          <option value="fighting">Luta</option>
+        </select>
+      </div>
+      <div class="grid" id="games-container"></div>
+      <div style="margin-top: 16px">
+        <button id="prev-btn" disabled>Anterior</button>
+        <span id="page-info">Página 1</span>
+        <button id="next-btn">Próxima</button>
+      </div>
+    </main>
+
+    <section class="sobre" id="sobre">
+      <div class="container">
+        <h2>Sobre o site</h2>
+        <p>
+          Somos apaixonados por games e queremos compartilhar análises de
+          qualidade com a comunidade gamer. Aqui você encontra reviews
+          imparciais, com foco em jogabilidade, gráficos, som e história.
+        </p>
+      </div>
+    </section>
+
+    <footer id="contato">
+      <div class="container">
+        <p>📧 contato@gamereviews.com | &copy; 2025 GAGAU GAMES</p>
+      </div>
+    </footer>
+
+    <script>
+      const apiKey = "6c3421f99b5f4057a395696e15f2ca7f";
+      const pageSize = 20;
+      let currentPage = 1;
+      let currentGenre = "";
+
+      const gamesContainer = document.getElementById("games-container");
+      const genreSelect = document.getElementById("genre-select");
+      const prevBtn = document.getElementById("prev-btn");
+      const nextBtn = document.getElementById("next-btn");
+      const pageInfo = document.getElementById("page-info");
+
+      async function fetchGames() {
+        const genreQuery = currentGenre ? `&genres=${currentGenre}` : "";
+        const url = `https://api.rawg.io/api/games?key=${apiKey}&page=${currentPage}&page_size=${pageSize}${genreQuery}`;
+
+        try {
+          const response = await fetch(url);
+          const data = await response.json();
+
+          displayGames(data.results);
+          updatePaginationButtons(data);
+        } catch (error) {
+          gamesContainer.innerHTML = "<p>Erro ao carregar jogos.</p>";
+          console.error(error);
+        }
+      }
+
+      function displayGames(games) {
+        gamesContainer.innerHTML = "";
+
+        if (games.length === 0) {
+          gamesContainer.innerHTML =
+            "<p>Nenhum jogo encontrado para este filtro.</p>";
+          return;
+        }
+
+        games.forEach((game) => {
+          const card = document.createElement("div");
+          card.classList.add("card");
+
+          card.innerHTML = `
+        <img src="${
+          game.background_image ||
+          "https://via.placeholder.com/420x236?text=No+Image"
+        }" alt="${game.name}" />
+        <h3>${game.name}</h3>
+        <p><strong>Lançamento:</strong> ${game.released || "N/A"}</p>
+        <p><strong>Nota:</strong> ${game.rating} / 5</p>
+        <p><strong>Gêneros:</strong> ${game.genres
+          .map((g) => g.name)
+          .join(", ")}</p>
+      `;
+
+          gamesContainer.appendChild(card);
+        });
+      }
+
+      function updatePaginationButtons(data) {
+        prevBtn.disabled = currentPage === 1;
+
+        const totalResults = data.count;
+        const totalPages = Math.ceil(totalResults / pageSize);
+
+        nextBtn.disabled = currentPage >= totalPages;
+
+        pageInfo.textContent = `Página ${currentPage} de ${totalPages}`;
+      }
+
+      // Eventos
+      genreSelect.addEventListener("change", () => {
+        currentGenre = genreSelect.value;
+        currentPage = 1;
+        fetchGames();
+      });
+
+      prevBtn.addEventListener("click", () => {
+        if (currentPage > 1) {
+          currentPage--;
+          fetchGames();
+        }
+      });
+
+      nextBtn.addEventListener("click", () => {
+        currentPage++;
+        fetchGames();
+      });
+
+      // Chamada inicial para carregar os jogos ao abrir a página
+      fetchGames();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,258 @@
+/* Color Theme Swatches in Hex */
+/* Reset e fontes */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Roboto", Arial, sans-serif;
+  background: linear-gradient(120deg, #1b0033 0%, #000428 100%);
+  color: #f4f4f4;
+  min-height: 100vh;
+}
+
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* HEADER */
+header {
+  background-color: #1e1e1e;
+  padding: 20px 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+header h1 {
+  float: left;
+  color: #cc00ff;
+}
+
+nav ul {
+  float: right;
+  list-style: none;
+}
+
+nav ul li {
+  display: inline-block;
+  margin-left: 20px;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #f1f1f1;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+  color: #00ffc8;
+}
+
+header::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.header-flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 0 12px 0;
+}
+
+.logo {
+  font-family: "Orbitron", Arial, sans-serif;
+  font-size: 2.2rem;
+  color: #00ffff;
+  letter-spacing: 2px;
+  text-shadow: 0 0 8px #00ffff80;
+}
+
+nav .nav-list {
+  list-style: none;
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+nav .nav-list li a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: color 0.2s;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+
+nav .nav-list li a:hover,
+nav .nav-list li .btn-login:hover {
+  color: #232931;
+  background: #00ffff;
+}
+
+.btn-login {
+  background: linear-gradient(90deg, #00f0ff 60%, #2b65ff 100%);
+  color: #232931;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 20px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  text-decoration: none;
+  box-shadow: 0 0 10px #00ffff80;
+}
+
+/* HERO */
+.hero {
+  background: linear-gradient(120deg, #232931cc 60%, #393e46cc 100%);
+  padding: 60px 0 40px 0;
+  text-align: center;
+  margin-bottom: 32px;
+  box-shadow: 0 4px 24px #00ffff22;
+}
+
+.hero-content h2 {
+  font-size: 2.2rem;
+  color: #00ffff;
+  margin-bottom: 12px;
+  font-family: "Orbitron", Arial, sans-serif;
+  text-shadow: 0 0 8px #00ffff80;
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  color: #fff;
+  opacity: 0.9;
+}
+
+/* SEÇÃO PRINCIPAL */
+.section-title {
+  font-size: 1.6rem;
+  color: #00ffff;
+  margin-bottom: 24px;
+  font-family: "Orbitron", Arial, sans-serif;
+  text-shadow: 0 0 8px #00ffff80;
+  text-align: center;
+}
+
+/* GRID DE REVIEWS */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: 32px;
+  margin-bottom: 40px;
+}
+
+/* CARDS */
+.card {
+  background: rgba(34, 40, 49, 0.95);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25);
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+
+.card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 16px 40px 0 #00ffff44;
+}
+
+.card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+}
+
+.card-content {
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card-content h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.2rem;
+  color: #00ffff;
+  font-family: "Orbitron", Arial, sans-serif;
+}
+
+.rating {
+  font-weight: bold;
+  color: #ffd700;
+  margin-bottom: 6px;
+}
+
+.rating span {
+  color: #fff;
+  background: #00ffff;
+  border-radius: 6px;
+  padding: 2px 8px;
+  margin-left: 4px;
+  font-size: 1rem;
+}
+
+/* SOBRE */
+.sobre {
+  background: rgba(34, 40, 49, 0.85);
+  padding: 40px 0;
+  margin-bottom: 0;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px #00ffff22;
+}
+
+.sobre h2 {
+  color: #00ffff;
+  font-family: "Orbitron", Arial, sans-serif;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.sobre p {
+  color: #fff;
+  font-size: 1.1rem;
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* FOOTER */
+footer {
+  background: #181c24;
+  padding: 20px 0;
+  text-align: center;
+  color: #aaa;
+  font-size: 1rem;
+  margin-top: 40px;
+  border-top: 2px solid #00ffff33;
+}
+
+@media (max-width: 700px) {
+  .header-flex {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .hero-content h2 {
+    font-size: 1.3rem;
+  }
+}

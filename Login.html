@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | GAGAU GAMES</title>
+  <link rel="shortcut icon" href="imagens/download.jpg" type="image/x-icon">
+  <link rel="stylesheet" href="pika.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Efeito de Partículas -->
+  <div id="particles-js"></div>
+  
+  <!-- Container de Login -->
+  <div class="login-container">
+    <h2 class="login-title">🎮 GAGAU GAMES</h2>
+    <form id="login-form">
+      <div class="input-box">
+        <input type="email" id="email" required autocomplete="username" />
+        <label>Email</label>
+      </div>
+      <div class="input-box">
+        <input type="password" id="password" required autocomplete="current-password" />
+        <label>Senha</label>
+      </div>
+      <button type="submit" class="btn-login">Entrar</button>
+    </form>
+    <div class="signup-link">
+      Não tem uma conta? <a href="Cadastro.html">Cadastre-se</a>
+    </div>
+  </div>
+  <script>
+    document.getElementById('login-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const senha = document.getElementById('password').value;
+
+      try {
+        const response = await fetch('http://127.0.0.1:5000/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, senha })
+        });
+
+        const data = await response.json();
+        if (data.login) {
+          alert('Login realizado com sucesso!');
+          window.location.href = "index.html"; // Redireciona para o index
+        } else {
+          alert('Email ou senha incorretos.');
+        }
+      } catch (error) {
+        alert('Erro ao conectar ao servidor.');
+      }
+    });
+  </script>
+</body>
+</html>
+

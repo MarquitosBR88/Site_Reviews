@@ -1,0 +1,147 @@
+/* Reset e fonte */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Orbitron', Arial, sans-serif;
+}
+
+/* Fundo com gradiente e partículas */
+body {
+  min-height: 100vh;
+  background: linear-gradient(120deg, #1b0033, #000428);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+  color: #fff;
+}
+
+#particles-js {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+}
+
+/* Container de Cadastro */
+.login-container {
+  background: rgba(15, 15, 30, 0.95);
+  padding: 40px 30px;
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(0,255,255,0.2);
+  width: 340px;
+  backdrop-filter: blur(6px);
+  animation: fadeIn 1s ease forwards;
+  position: relative;
+  z-index: 1;
+}
+
+/* Título */
+.login-container h2 {
+  color: #00ffff;
+  text-align: center;
+  margin-bottom: 30px;
+  text-shadow: 0 0 5px #00ffff;
+  font-weight: 600;
+}
+
+/* Input box estilizado */
+.input-box {
+  position: relative;
+  margin-bottom: 30px;
+}
+
+.input-box input {
+  width: 100%;
+  padding: 12px 10px;
+  background: transparent;
+  border: 2px solid #00ffff;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.input-box label {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  color: #aaa;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  background: rgba(15,15,30,0.95);
+  padding: 0 5px;
+}
+
+.input-box input:focus + label,
+.input-box input:valid + label {
+  top: -10px;
+  left: 10px;
+  font-size: 12px;
+  color: #00ffff;
+}
+
+/* Botão de cadastro */
+button[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(to right, #00f0ff, #2b65ff);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 0 10px #00ffff;
+  transition: transform 0.2s, background 0.4s;
+  margin-top: 8px;
+}
+
+button[type="submit"]:hover {
+  background: linear-gradient(to right, #00ffd0, #6c63ff);
+  transform: scale(1.05);
+  box-shadow: 0 0 20px #00ffff;
+}
+
+/* Link para login */
+.signup-link {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #ccc;
+}
+
+.signup-link a {
+  color: #00ffff;
+  text-decoration: none;
+}
+
+.signup-link a:hover {
+  text-decoration: underline;
+  color: #00ffd5;
+}
+
+/* Animação */
+@keyframes fadeIn {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Responsivo */
+@media (max-width: 400px) {
+  .login-container {
+    padding: 24px 8px 18px 8px;
+    max-width: 98vw;
+  }
+}
