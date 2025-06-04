@@ -42,30 +42,34 @@
     </div>
     <!-- Adicione este script ao final do Cadastro.html -->
     <script>
-      document.getElementById('cadastro-form').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const nome = document.getElementById('nome').value;
-        const email = document.getElementById('email').value;
-        const senha = document.getElementById('senha').value;
+      document
+        .getElementById("cadastro-form")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const nome = document.getElementById("nome").value;
+          const email = document.getElementById("email").value;
+          const senha = document.getElementById("senha").value;
 
-        try {
-          const response = await fetch('http://127.0.0.1:5000/cadastrar', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nome, email, senha })
-          });
+          try {
+            const response = await fetch("http://127.0.0.1:5000/cadastrar", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ nome, email, senha }),
+            });
 
-          const data = await response.json();
-          if (response.ok) {
-            alert('Cadastro realizado com sucesso! Redirecionando para o login...');
-            window.location.href = "Login.html"; // Redireciona para o login
-          } else {
-            alert(data.mensagem || 'Erro ao cadastrar.');
+            const data = await response.json();
+            if (response.ok) {
+              alert(
+                "Cadastro realizado com sucesso! Redirecionando para o login..."
+              );
+              window.location.href = "Login.html"; // Redireciona para o login
+            } else {
+              alert(data.mensagem || "Erro ao cadastrar.");
+            }
+          } catch (error) {
+            alert("Erro ao conectar ao servidor.");
           }
-        } catch (error) {
-          alert('Erro ao conectar ao servidor.');
-        }
-      });
+        });
     </script>
     <script>
       // Configuração das partículas
