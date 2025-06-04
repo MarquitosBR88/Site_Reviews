@@ -54,6 +54,14 @@
           <option value="sports">Esportes</option>
           <option value="fighting">Luta</option>
         </select>
+        <label for="order-select">Ordenar por:</label>
+        <select id="order-select">
+          <option value="">Padrão</option>
+          <option value="-rating">Maior nota</option>
+          <option value="rating">Menor nota</option>
+          <option value="-released">Mais recentes</option>
+          <option value="released">Mais antigos</option>
+        </select>
       </div>
       <div class="grid" id="games-container"></div>
       <div style="margin-top: 16px">
@@ -83,8 +91,12 @@
     <script>
       const apiKey = "6c3421f99b5f4057a395696e15f2ca7f";
       const pageSize = 20;
+      const maxGames = 500;
+      const maxPages = Math.ceil(maxGames / pageSize);
       let currentPage = 1;
       let currentGenre = "";
+      let orderBy = "";
+      let filterYear = "";
 
       const gamesContainer = document.getElementById("games-container");
       const genreSelect = document.getElementById("genre-select");
@@ -92,84 +104,134 @@
       const nextBtn = document.getElementById("next-btn");
       const pageInfo = document.getElementById("page-info");
 
-      async function fetchGames() {
-        const genreQuery = currentGenre ? `&genres=${currentGenre}` : "";
-        const url = `https://api.rawg.io/api/games?key=${apiKey}&page=${currentPage}&page_size=${pageSize}${genreQuery}`;
+      // Criar dropdown Ordenar por Nota (único)
+      const orderSelect = document.createElement("select");
+      orderSelect.style.marginLeft = "8px";
+      orderSelect.innerHTML = `
+    <option value="">Ordenar por Nota</option>
+    <option value="-rating">Maior nota</option>
+    <option value="rating">Menor nota</option>
+  `;
 
-        try {
-          const response = await fetch(url);
-          const data = await response.json();
+      // Criar dropdown Filtrar por Ano
+      const yearSelect = document.createElement("select");
+      yearSelect.style.marginLeft = "8px";
+      yearSelect.innerHTML = `<option value="">Filtrar por Ano</option>`;
 
-          displayGames(data.results);
-          updatePaginationButtons(data);
-        } catch (error) {
-          gamesContainer.innerHTML = "<p>Erro ao carregar jogos.</p>";
-          console.error(error);
-        }
+      const currentYear = new Date().getFullYear();
+      for (let y = currentYear; y >= 2000; y--) {
+        const option = document.createElement("option");
+        option.value = y;
+        option.textContent = y;
+        yearSelect.appendChild(option);
       }
 
-      function displayGames(games) {
-        gamesContainer.innerHTML = "";
+      // Limpar para garantir só 1 dropdown no gênero (que já está no HTML)
+      // e adicionar os outros dois dropdowns APENAS UMA VEZ no container do filtro
+      // (no mesmo pai do genreSelect)
+      const filterContainer = genreSelect.parentElement;
+      // Remover selects extras que possam existir (se o script rodar mais de uma vez)
+      Array.from(filterContainer.querySelectorAll("select")).forEach((sel) => {
+        if (sel !== genreSelect) sel.remove();
+      });
+      filterContainer.appendChild(orderSelect);
+      filterContainer.appendChild(yearSelect);
 
-        if (games.length === 0) {
-          gamesContainer.innerHTML =
-            "<p>Nenhum jogo encontrado para este filtro.</p>";
-          return;
-        }
+      // Eventos para atualização
+      orderSelect.addEventListener("change", () => {
+        orderBy = orderSelect.value;
+        currentPage = 1;
+        fetchAndRenderGames();
+      });
 
-        games.forEach((game) => {
-          const card = document.createElement("div");
-          card.classList.add("card");
+      yearSelect.addEventListener("change", () => {
+        filterYear = yearSelect.value;
+        currentPage = 1;
+        fetchAndRenderGames();
+      });
 
-          card.innerHTML = `
-        <img src="${
-          game.background_image ||
-          "https://via.placeholder.com/420x236?text=No+Image"
-        }" alt="${game.name}" />
-        <h3>${game.name}</h3>
-        <p><strong>Lançamento:</strong> ${game.released || "N/A"}</p>
-        <p><strong>Nota:</strong> ${game.rating} / 5</p>
-        <p><strong>Gêneros:</strong> ${game.genres
-          .map((g) => g.name)
-          .join(", ")}</p>
-      `;
-
-          gamesContainer.appendChild(card);
-        });
-      }
-
-      function updatePaginationButtons(data) {
-        prevBtn.disabled = currentPage === 1;
-
-        const totalResults = data.count;
-        const totalPages = Math.ceil(totalResults / pageSize);
-
-        nextBtn.disabled = currentPage >= totalPages;
-
-        pageInfo.textContent = `Página ${currentPage} de ${totalPages}`;
-      }
-
-      // Eventos
       genreSelect.addEventListener("change", () => {
         currentGenre = genreSelect.value;
         currentPage = 1;
-        fetchGames();
+        fetchAndRenderGames();
       });
 
       prevBtn.addEventListener("click", () => {
         if (currentPage > 1) {
           currentPage--;
-          fetchGames();
+          fetchAndRenderGames();
         }
       });
 
       nextBtn.addEventListener("click", () => {
-        currentPage++;
-        fetchGames();
+        if (currentPage < maxPages) {
+          currentPage++;
+          fetchAndRenderGames();
+        }
       });
 
-      // Chamada inicial para carregar os jogos ao abrir a página
-      fetchGames();
+      async function fetchGames(page = 1) {
+        let url = `https://api.rawg.io/api/games?key=${apiKey}&page=${page}&page_size=${pageSize}`;
+
+        if (currentGenre) url += `&genres=${currentGenre}`;
+        if (orderBy) url += `&ordering=${orderBy}`;
+        if (filterYear) url += `&dates=${filterYear}-01-01,${filterYear}-12-31`;
+
+        const res = await fetch(url);
+        const data = await res.json();
+
+        // Filtro nota > 3 e ratings_count > 50
+        const validGames = data.results.filter(
+          (j) => j.rating > 3 && j.ratings_count > 50
+        );
+        return validGames;
+      }
+
+      async function fetchAndRenderGames() {
+        gamesContainer.innerHTML = "Carregando...";
+
+        let games = [];
+        let tempPage = currentPage;
+
+        // Puxa páginas enquanto não tiver jogos suficientes para a página atual
+        while (games.length < pageSize && tempPage <= maxPages) {
+          const fetchedGames = await fetchGames(tempPage);
+          // Junta os jogos válidos dessa página na lista total
+          games = games.concat(fetchedGames);
+          tempPage++;
+        }
+
+        if (games.length > 0) {
+          // Ajusta currentPage para última página efetivamente usada
+          currentPage = tempPage - 1;
+          pageInfo.textContent = `Página ${currentPage}`;
+
+          // Se juntou mais que o pageSize, corta só o pageSize para exibir na página
+          renderGames(games.slice(0, pageSize));
+        } else {
+          gamesContainer.innerHTML = `<p>Nenhum jogo encontrado com as condições atuais.</p>`;
+        }
+
+        prevBtn.disabled = currentPage === 1;
+        nextBtn.disabled = currentPage >= maxPages;
+      }
+
+      function renderGames(games) {
+        gamesContainer.innerHTML = "";
+        games.forEach((game) => {
+          const card = document.createElement("div");
+          card.classList.add("card");
+          card.innerHTML = `
+        <img src="${game.background_image}" alt="${game.name}" />
+        <h3>${game.name}</h3>
+        <p>Nota: ${game.rating}</p>
+        <p>Data de Lançamento: ${game.released}</p>
+      `;
+          gamesContainer.appendChild(card);
+        });
+      }
+
+      fetchAndRenderGames();
     </script>
   </body>
 </html>
